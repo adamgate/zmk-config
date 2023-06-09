@@ -15,20 +15,42 @@
 #define GAMING 4
 
 / {
+    combos {
+        compatible = "zmk,combos";
+
+        // In base layer, press bottom-right 3 keys to switch to gaming
+        combo_switch_to_gaming {
+            timeout-ms = <50>;
+            layers = <0>
+            key-positions = <0>;
+            bindings = <39 40 41>;
+        };
+
+        // In gaming layer, press bottom-right 3 keys to switch to base
+        combo_switch_to_base {
+            timeout-ms = <50>;
+            layers = <4>
+            key-positions = <4>;
+            bindings = <39 40 41>;
+        };
+    };
+};
+
+/ {
         keymap {
                 compatible = "zmk,keymap";
 
                 base_layer {
 // -----------------------------------------------------------------------------------------
-// | TAB  |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U   |  I  |  O  |  P  | BKSP |
+// | CAPS |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U   |  I  |  O  |  P  | BKSP |
 // | ESC  |  A  |  S  |  D  |  F  |  G  |     |  H  |  J   |  K  |  L  |  ;  |  '   |
-// | CAPS |  Z  |  X  |  C  |  V  |  B  |     |  N  |  M   |  ,  |  .  |  /  | ENTR |
+// | SHFT |  Z  |  X  |  C  |  V  |  B  |     |  N  |  M   |  ,  |  .  |  /  | ENTR |
 //                 | CTRL | CMD | SPACE |    | BSPC | SHFT | ALT |
                         bindings = <
-   &kp TAB  &kp Q &kp W &kp E &kp R &kp T &kp Y     &kp U &kp I     &kp O   &kp P    &kp BSPC
-   &kp ESC  &kp A &kp S &kp D &kp F &kp G &kp H     &kp J &kp K     &kp L   &kp SEMI &kp SQT
-   &kp CAPS &kp Z &kp X &kp C &kp V &kp B &kp N     &kp M &kp COMMA &kp DOT &kp FSLH &kp RET
-                &kp LCTRL &kp LCMD &lt NUM SPACE    &lt SYMBOL BSPC &lt FKEY LSHFT &kp RALT
+   &kp CAPS  &kp Q &kp W &kp E &kp R &kp T &kp Y     &kp U &kp I     &kp O   &kp P    &kp BSPC
+   &kp ESC   &kp A &kp S &kp D &kp F &kp G &kp H     &kp J &kp K     &kp L   &kp SEMI &kp SQT
+   &kp LSFHT &kp Z &kp X &kp C &kp V &kp B &kp N     &kp M &kp COMMA &kp DOT &kp FSLH &kp RET
+               &kp LCTRL &kp LCMD &lt NUM SPACE      &lt SYMBOL BSPC &lt FKEY TAB &kp RALT
                         >;
                 };
 
@@ -42,21 +64,21 @@
    &none &none  &none  &none  &none  &none     &none       &none        &none           &none         &none        &none
    &none &kp N1 &kp N2 &kp N3 &kp N4 &kp N5    &kp N6      &kp N7       &kp N8          &kp N9        &kp N0       &none
    &none &none  &none  &none  &none  &none     &kp KP_PLUS &kp KP_MINUS &kp KP_MULTIPLY &kp KP_DIVIDE &kp KP_EQUAL &kp KP_DOT
-                         &none &none &none     &kp BSPC &none &kp K_PASTE
+                          &none &none &none    &kp BSPC &none &kp K_PASTE
                         >;
                 };
 
                 symbol_layer {
 // -----------------------------------------------------------------------------------------
-// |   | ! | @ | # | $ | % |     |  ^  | & | * | ( | ) |   |
-// |   |   |   |   |   |   |     |  -  | = | [ | ] | \ | ` |
+// |   |   |   |   |   |   |     |  ^  | & | * | ( | ) |   |
+// |   | ! | @ | # | $ | % |     |  -  | = | [ | ] | \ | ` |
 // |   |   |   |   |   |   |     |  _  | + | { | } | "|" | ~ |
 //    | CUT | COPY | PASTE |     | MOD |   |   |
                         bindings = <
-   &none &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT    &kp CARET &kp AMPS  &kp KP_MULTIPLY &kp LPAR &kp RPAR &kp BSPC
-   &none &none    &none  &none    &none    &none        &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp BSLH &kp GRAVE
+   &none &none    &none  &none    &none    &none        &kp CARET &kp AMPS  &kp KP_ASTERISK &kp LPAR &kp RPAR &kp BSPC
+   &none &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT    &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp BSLH &kp GRAVE
    &none &none    &none  &none    &none    &none        &kp UNDER &kp PLUS  &kp LBRC        &kp RBRC &kp PIPE &kp TILDE
-                  &kp K_CUT &kp K_COPY &kp K_PASTE      &none &none &none
+                    &kp K_CUT &kp K_COPY &kp K_PASTE    &none &none &none
                         >;
                 };
 
@@ -75,6 +97,7 @@
                 };
 
                 gaming_layer {
+//      DOESN'T HAVE ANY LAYER TRIGGERS
 // -----------------------------------------------------------------------------------------
 // | TAB  |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U   |  I  |  O  |  P  | BKSP |
 // | ESC  |  A  |  S  |  D  |  F  |  G  |     |  H  |  J   |  K  |  L  |  ;  |  '   |
@@ -84,7 +107,7 @@
    &kp TAB  &kp Q &kp W &kp E &kp R &kp T &kp Y     &kp U &kp I     &kp O   &kp P    &kp BSPC
    &kp ESC  &kp A &kp S &kp D &kp F &kp G &kp H     &kp J &kp K     &kp L   &kp SEMI &kp SQT
    &kp CAPS &kp Z &kp X &kp C &kp V &kp B &kp N     &kp M &kp COMMA &kp DOT &kp FSLH &kp RET
-                &kp LCTRL &kp LCMD &kp NUM SPACE    &kp BSPC &kp LSHFT &kp RALT
+               &kp LCTRL &kp LCMD &kp NUM SPACE     &kp BSPC &kp LSHFT &kp RALT
                         >;
                 };
 };
