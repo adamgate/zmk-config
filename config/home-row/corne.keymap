@@ -42,10 +42,10 @@
 
                 symbol_layer {
 // -----------------------------------------------------------------------------------------
-// |   | ! | @ | # | $ | % |     | ^ | & | * | ( | ) |   |
-// |   |   |   |   |   |   |     | - | = | [ | ] | \ | ` |
-// |   |   |   |   |   |   |     | _ | + | { | } | "|" | ~ |
-//                 |   |   |     |   |   |   |
+// |   | ! | @ | # | $ | % |     |  ^  | & | * | ( | ) |   |
+// |   |   |   |   |   |   |     |  -  | = | [ | ] | \ | ` |
+// |   |   |   |   |   |   |     |  _  | + | { | } | "|" | ~ |
+//                 |   |   |     | MOD |   |   |
                         bindings = <
    &none &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT    &kp CARET &kp AMPS  &kp KP_MULTIPLY &kp LPAR &kp RPAR &kp BSPC
    &none &none    &none  &none    &none    &none        &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp BSLH &kp GRAVE
@@ -59,7 +59,7 @@
 // |   | F1 | F2  | F3  | F4  |   |     |   | Pg Up  |   |   | Home | Del |
 // |   | F5 | F6  | F7  | F8  |   |     |   |   ←    | ↓ | ↑ |  →   |   |
 // |   | F9 | F10 | F11 | F12 |   |     |   | Pg Dwn |   |   | End  |   |
-//                |     |     |   |     |   |        |   |
+//                |     |     |   |     |   |  MOD   |   |
                         bindings = <
    &none &kp F1 &kp F2  &kp F3  &kp F4  &none    &none &kp PG_UP   &none     &none  &kp HOME  &kp DEL
    &none &kp F5 &kp F6  &kp F7  &kp F8  &none    &none &kp LEFT    &kpo DOWN &kp UP &kp RIGHT &none
