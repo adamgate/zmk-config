@@ -21,7 +21,7 @@
                 // In base layer, press east bottom 3 keys to switch to gaming
                 combo_switch_to_gaming {
                         timeout-ms = <50>;
-                        layers = <0>
+                        layers = <0>;
                         key-positions = <39 40 41>;
                         bindings = <&to 4>;
                 };
@@ -29,7 +29,7 @@
                 // In gaming layer, press east bottom 3 keys to switch to base
                         combo_switch_to_base {
                         timeout-ms = <50>;
-                        layers = <4>
+                        layers = <4>;
                         key-positions = <39 40 41>;
                         bindings = <&to 0>;
                 };
