@@ -108,4 +108,5 @@
                &kp LCTRL &kp LCMD &kp NUM SPACE     &kp BSPC &kp LSHFT &kp RALT
                         >;
                 };
+        };
 };

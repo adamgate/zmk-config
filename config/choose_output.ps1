@@ -1,4 +1,4 @@
-$Folder = Read-Host "Please enter the folder of the keymap you want to build" 
+$Folder = Read-Host "Please enter the name of the folder containing the keymap you want to build (e.g. 'default')" 
 
 if (Test-Path -Path $Folder) {
     # See if the files are already loaded.
