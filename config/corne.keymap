@@ -87,9 +87,9 @@
 // |   | F9 | F10 | F11 | F12 |   |     |   | Pg Dwn |   |   | End  |   |
 //                |     |     |   |     |   |  MOD   |   |
                         bindings = <
-   &none &kp F1 &kp F2  &kp F3  &kp F4  &none    &none &kp PG_UP   &none     &none  &kp HOME  &kp DEL
-   &none &kp F5 &kp F6  &kp F7  &kp F8  &none    &none &kp LEFT    &kpo DOWN &kp UP &kp RIGHT &none
-   &none &kp F9 &kp F10 &kp F11 &kp F12 &none    &none &kp PG_DOWN &none     &none  &kp END   &none
+   &none &kp F1 &kp F2  &kp F3  &kp F4  &none    &none &kp PG_UP &none    &none  &kp HOME  &kp DEL
+   &none &kp F5 &kp F6  &kp F7  &kp F8  &none    &none &kp LEFT  &kp DOWN &kp UP &kp RIGHT &none
+   &none &kp F9 &kp F10 &kp F11 &kp F12 &none    &none &kp PG_DN &none    &none  &kp END   &none
                     	    &none &none &none    &none &none &none
                         >;
                 };
