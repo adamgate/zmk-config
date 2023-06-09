@@ -40,14 +40,14 @@
 
                 base_layer {
 // -----------------------------------------------------------------------------------------
-// | CAPS |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U   |  I  |  O  |  P  | BKSP |
+// | CAPS |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U   |  I  |  O  |  P  | DEL  |
 // | ESC  |  A  |  S  |  D  |  F  |  G  |     |  H  |  J   |  K  |  L  |  ;  |  '   |
 // | SHFT |  Z  |  X  |  C  |  V  |  B  |     |  N  |  M   |  ,  |  .  |  /  | ENTR |
 //                 | CTRL | CMD | SPACE |    | BSPC | SHFT | ALT |
                         bindings = <
-   &kp CAPS  &kp Q &kp W &kp E &kp R &kp T &kp Y     &kp U &kp I     &kp O   &kp P    &kp BSPC
+   &kp CAPS  &kp Q &kp W &kp E &kp R &kp T &kp Y     &kp U &kp I     &kp O   &kp P    &kp DEL
    &kp ESC   &kp A &kp S &kp D &kp F &kp G &kp H     &kp J &kp K     &kp L   &kp SEMI &kp SQT
-   &kp LSFHT &kp Z &kp X &kp C &kp V &kp B &kp N     &kp M &kp COMMA &kp DOT &kp FSLH &kp RET
+   &kp LSHFT &kp Z &kp X &kp C &kp V &kp B &kp N     &kp M &kp COMMA &kp DOT &kp FSLH &kp RET
                &kp LCTRL &kp LCMD &lt NUM SPACE      &lt SYMBOL BSPC &lt FKEY TAB &kp RALT
                         >;
                 };
