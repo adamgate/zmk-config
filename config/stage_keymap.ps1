@@ -1,5 +1,6 @@
 $Folder = Read-Host "Please enter the name of the folder containing the keymap you want to build (e.g. 'default')" 
 
+# Ensure provided folder exists
 if (Test-Path -Path $Folder) {
     # See if the files are already loaded.
     if ((Get-FileHash 'corne.conf').Hash -eq (Get-FileHash ".\${Folder}\corne.conf").Hash -and
