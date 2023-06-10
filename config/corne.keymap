@@ -19,13 +19,22 @@
 #define XXX &none
 #define ___ &trans
 
-// TODO-
-// -add layer for wireless functionality
+#define QUICK_TAP_MS 175
+
+// IDEAS-
+// -add layer for wireless functionality (or make combos for them)
 // -implement turbo click macro
-// -make thumb mods repeat when tapped then held
-// -consider making num layer a numpad
-// -consider adding more combos (maybe to its own comos.dtsi file)
+// -add "magic" button that has a hotkey for each program
+// -make thumb mods repeat when tapped then held (tap = 1 space, hold = layer, tap -> hold = repeating spaces)
+// -consider making num layer a numpad instead of on home row
+// -consider adding more combos (maybe to its own combos.dtsi file)
 // -tweak mod-tap and layer-tap configs to my liking
+// -add a miryoku keymap to the repo
+
+// Links-
+// https://www.reddit.com/r/ErgoMechKeyboards/comments/zfomr0/whats_your_favorite_feature_you_implemented_on/
+// https://github.com/urob/zmk-config/blob/main/config/base.keymap
+// https://www.reddit.com/r/ErgoMechKeyboards/comments/qzfiae/my_impressions_on_miryoku_36_key_layout_system/
 
 // layer-tap config
 &lt {  
@@ -38,7 +47,7 @@
 &mt {
     flavor = "tap-preferred";
     tapping-term-ms = <220>;
-    quick-tap-ms = <220>;
+    quick-tap-ms = <QUICK_TAP_MS>;
     hold-trigger-key-positions = <0>;
 };
 
