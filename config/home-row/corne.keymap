@@ -15,106 +15,116 @@
 #define GAMING 4
 
 / {
-       combos {
-               compatible = "zmk,combos";
+    behaviors {
+        // Tap or hold left shift for shift, tap for caps lock
+        td0: tap_dance_shift_lock {
+            compatible = "zmk,behavior-tap-dance";
+            label = "TAP_DANCE_0";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp LSHFT, <&kp CAPSLOCK>;
+        };
+    };
+    
+    combos {
+        compatible = "zmk,combos";
 
-                // In base layer, press east bottom 3 keys to switch to gaming
-                combo_jk_esc {
-                        timeout-ms = <50>;
-                        layers = <0 4>;
-                        key-positions = <19 20>;
-                        bindings = <&kp ESC>;
-                };
-
-
-                // In base layer, press east bottom 3 keys to switch to gaming
-                combo_switch_to_gaming {
-                        timeout-ms = <50>;
-                        layers = <0>;
-                        key-positions = <39 40 41>;
-                        bindings = <&to 4>;
-                };
-
-                // In gaming layer, press east bottom 3 keys to switch to base
-                combo_switch_to_base {
-                        timeout-ms = <50>;
-                        layers = <4>;
-                        key-positions = <39 40 41>;
-                        bindings = <&to 0>;
-                };
+        // J + K = ESC
+        combo_jk_esc {
+            timeout-ms = <50>;
+            layers = <0>;
+            key-positions = <19 20>;
+            bindings = <&kp ESC>;
         };
 
-        keymap {
-                compatible = "zmk,keymap";
+        // In base layer, press east bottom 3 keys to switch to gaming
+        combo_switch_to_gaming {
+            timeout-ms = <50>;
+            layers = <0>;
+            key-positions = <39 40 41>;
+            bindings = <&to 4>;
+        };
 
-                base_layer {
+        // In gaming layer, press east bottom 3 keys to switch to base
+        combo_switch_to_base {
+            timeout-ms = <50>;
+            layers = <4>;
+            key-positions = <39 40 41>;
+            bindings = <&to 0>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        base_layer {
 // -----------------------------------------------------------------------------------------
-// | CAPS |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U   |  I  |  O  |  P  | DEL  |
-// | ESC  |  A  |  S  |  D  |  F  |  G  |     |  H  |  J   |  K  |  L  |  ;  |  '   |
-// | SHFT |  Z  |  X  |  C  |  V  |  B  |     |  N  |  M   |  ,  |  .  |  /  | ENTR |
-//                 | CTRL | CMD | SPACE |    | BSPC | SHFT | ALT |
-                        bindings = <
-   &kp CAPS  &kp Q &kp W &kp E &kp R &kp T &kp Y     &kp U &kp I     &kp O   &kp P    &kp DEL
-   &kp ESC   &kp A &kp S &kp D &kp F &kp G &kp H     &kp J &kp K     &kp L   &kp SEMI &kp SQT
-   &kp LSHFT &kp Z &kp X &kp C &kp V &kp B &kp N     &kp M &kp COMMA &kp DOT &kp FSLH &kp RET
+//      | CAPS |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U   |  I  |  O  |  P  | DEL  |
+//      | ESC  |  A  |  S  |  D  |  F  |  G  |     |  H  |  J   |  K  |  L  |  ;  |  '   |
+// | SHFT/CAPS |  Z  |  X  |  C  |  V  |  B  |     |  N  |  M   |  ,  |  .  |  /  | ENTR |
+//                      | CTRL | CMD | SPACE |     | BSPC | SHFT | ALT |
+        bindings = <
+   &kp CAPS &kp Q &kp W &kp E &kp R &kp T &kp Y     &kp U &kp I     &kp O   &kp P    &kp DEL
+   &kp ESC  &kp A &kp S &kp D &kp F &kp G &kp H     &kp J &kp K     &kp L   &kp SEMI &kp SQT
+   &td0     &kp Z &kp X &kp C &kp V &kp B &kp N     &kp M &kp COMMA &kp DOT &kp FSLH &kp RET
                &kp LCTRL &kp LCMD &lt NUM SPACE      &lt SYMBOL BSPC &lt FKEY TAB &kp RALT
-                        >;
-                };
+            >;
+        };
 
-                num_layer {
+        num_layer {
 // -----------------------------------------------------------------------------------------
 // |   |   |   |   |   |   |    |   |   |   |   |   |   |
 // |   | 1 | 2 | 3 | 4 | 5 |    | 6 | 7 | 8 | 9 | 0 |   |
 // |   |   |   |   |   |   |    | + | - | * | / | = | . |
 //           |   | MOD |   |    | BSPC |   |   |
-                        bindings = <
+            bindings = <
    &none &none  &none  &none  &none  &none     &none       &none        &none           &none         &none        &none
    &none &kp N1 &kp N2 &kp N3 &kp N4 &kp N5    &kp N6      &kp N7       &kp N8          &kp N9        &kp N0       &none
    &none &none  &none  &none  &none  &none     &kp KP_PLUS &kp KP_MINUS &kp KP_MULTIPLY &kp KP_DIVIDE &kp KP_EQUAL &kp KP_DOT
                           &none &none &none    &kp BSPC &none &kp K_PASTE
-                        >;
-                };
+            >;
+        };
 
-                symbol_layer {
+        symbol_layer {
 // -----------------------------------------------------------------------------------------
 // |   |   |   |   |   |   |     |  ^  | & | * | ( | ) |   |
 // |   | ! | @ | # | $ | % |     |  -  | = | [ | ] | \ | ` |
 // |   |   |   |   |   |   |     |  _  | + | { | } | "|" | ~ |
 //    | CUT | COPY | PASTE |     | MOD |   |   |
-                        bindings = <
+            bindings = <
    &none &none    &none  &none    &none    &none        &kp CARET &kp AMPS  &kp KP_ASTERISK &kp LPAR &kp RPAR &kp BSPC
    &none &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT    &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp BSLH &kp GRAVE
    &none &none    &none  &none    &none    &none        &kp UNDER &kp PLUS  &kp LBRC        &kp RBRC &kp PIPE &kp TILDE
                     &kp K_CUT &kp K_COPY &kp K_PASTE    &none &none &none
-                        >;
-                };
+            >;
+        };
 
-                fkey_layer {
+        fkey_layer {
 // -----------------------------------------------------------------------------------------
 // |   | F1 | F2  | F3  | F4  |   |     |   | Pg Up  |   |   | Home | Del |
 // |   | F5 | F6  | F7  | F8  |   |     |   |   ←    | ↓ | ↑ |  →   |   |
 // |   | F9 | F10 | F11 | F12 |   |     |   | Pg Dwn |   |   | End  |   |
 //                |     |     |   |     |   |  MOD   |   |
-                        bindings = <
+            bindings = <
    &none &kp F1 &kp F2  &kp F3  &kp F4  &none    &none &kp PG_UP &none    &none  &kp HOME  &kp DEL
    &none &kp F5 &kp F6  &kp F7  &kp F8  &none    &none &kp LEFT  &kp DOWN &kp UP &kp RIGHT &none
    &none &kp F9 &kp F10 &kp F11 &kp F12 &none    &none &kp PG_DN &none    &none  &kp END   &none
                     	    &none &none &none    &none &none &none
-                        >;
-                };
+            >;
+        };
 
-                gaming_layer {
+        gaming_layer {
 // -----------------------------------------------------------------------------------------
 // | TAB  |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U   |  I  |  O  |  P  | BKSP |
 // | ESC  |  A  |  S  |  D  |  F  |  G  |     |  H  |  J   |  K  |  L  |  ;  |  '   |
 // | CAPS |  Z  |  X  |  C  |  V  |  B  |     |  N  |  M   |  ,  |  .  |  /  | ENTR |
 //                 | CTRL | CMD | SPACE |    | BSPC | SHFT | ALT |
-                        bindings = <
+            bindings = <
    &kp TAB  &kp Q &kp W &kp E &kp R &kp T &kp Y     &kp U &kp I     &kp O   &kp P    &kp BSPC
    &kp ESC  &kp A &kp S &kp D &kp F &kp G &kp H     &kp J &kp K     &kp L   &kp SEMI &kp SQT
    &kp CAPS &kp Z &kp X &kp C &kp V &kp B &kp N     &kp M &kp COMMA &kp DOT &kp FSLH &kp RET
                    &kp LCTRL &kp LCMD &kp SPACE     &kp BSPC &kp LSHFT &kp RALT
-                        >;
-                };
+            >;
         };
+    };
 };
