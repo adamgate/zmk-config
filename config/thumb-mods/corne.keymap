@@ -13,6 +13,34 @@
 #define SYMBOL 2
 #define FKEY   3
 #define GAMING 4
+// #define SYS    5
+// #define MOUSE  6
+
+#define XXX &none
+#define ___ &trans
+
+// TODO-
+// -add layer for wireless functionality
+// -implement turbo click macro
+// -make thumb mods repeat when tapped then held
+// -consider making num layer a numpad
+// -consider adding more combos (maybe to its own comos.dtsi file)
+// -tweak mod-tap and layer-tap configs to my liking
+
+// layer-tap config
+&lt {  
+    flavor = "balanced";
+    tapping-term-ms = <200>;
+    quick-tap-ms = <QUICK_TAP_MS>;
+};
+
+// mod-tap config
+&mt {
+    flavor = "tap-preferred";
+    tapping-term-ms = <220>;
+    quick-tap-ms = <220>;
+    hold-trigger-key-positions = <0>;
+};
 
 / {
     behaviors {
@@ -23,6 +51,19 @@
             #binding-cells = <0>;
             tapping-term-ms = <200>;
             bindings = <&kp LSHFT>, <&kp CAPSLOCK>;
+        };
+    };
+
+     macros {
+        turbo_click: turbo_click {
+            label = "ZM_turbo_click";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LSHFT>
+                , <&macro_tap &kp Z &kp M &kp K>
+                , <&macro_release &kp LSHFT>
+                ;
         };
     };
     
@@ -78,10 +119,10 @@
 // |   |   |   |   |   |   |    | + | - | * | / | = | . |
 //           |   | MOD |   |    | BSPC |   |   |
             bindings = <
-   &none &none  &none  &none  &none  &none      &none       &none        &none           &none         &none        &none
-   &none &kp N1 &kp N2 &kp N3 &kp N4 &kp N5     &kp N6      &kp N7       &kp N8          &kp N9        &kp N0       &none
-   &none &none  &none  &none  &none  &none      &kp KP_PLUS &kp KP_MINUS &kp KP_MULTIPLY &kp KP_DIVIDE &kp KP_EQUAL &kp KP_DOT
-                          &none &none &none     &kp BSPC &none &kp K_PASTE
+   &XXX &XXX   &XXX   &XXX   &XXX   &XXX       &XXX        &XXX         &XXX            &XXX          &XXX         &XXX
+   &XXX &kp N1 &kp N2 &kp N3 &kp N4 &kp N5     &kp N6      &kp N7       &kp N8          &kp N9        &kp N0       &XXX
+   &XXX &XXX   &XXX   &XXX   &XXX   &XXX       &kp KP_PLUS &kp KP_MINUS &kp KP_MULTIPLY &kp KP_DIVIDE &kp KP_EQUAL &kp KP_DOT
+                          &XXX &XXX &XXX       &kp BSPC &XXX &kp K_PASTE
             >;
         };
 
@@ -92,10 +133,10 @@
 // |   |   |   |   |   |   |     |  _  | + | { | } | "|" | ~ |
 //    | CUT | COPY | PASTE |     | MOD |   |   |
             bindings = <
-   &none &none    &none  &none    &none    &none         &kp CARET &kp AMPS  &kp KP_ASTERISK &kp LPAR &kp RPAR &kp BSPC
-   &none &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT     &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp BSLH &kp GRAVE
-   &none &none    &none  &none    &none    &none         &kp UNDER &kp PLUS  &kp LBRC        &kp RBRC &kp PIPE &kp TILDE
-                    &kp K_CUT &kp K_COPY &kp K_PASTE     &none &none &none
+   &XXX &XXX     &XXX   &XXX     &XXX     &XXX          &kp CARET &kp AMPS  &kp KP_ASTERISK &kp LPAR &kp RPAR &kp BSPC
+   &XXX &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT     &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp BSLH &kp GRAVE
+   &XXX &XXX     &XXX   &XXX     &XXX     &XXX          &kp UNDER &kp PLUS  &kp LBRC        &kp RBRC &kp PIPE &kp TILDE
+                    &kp K_CUT &kp K_COPY &kp K_PASTE    &XXX &XXX &XXX
             >;
         };
 
@@ -106,10 +147,10 @@
 // |   | F9 | F10 | F11 | F12 |   |     | PREV | Pg Dwn |   |   | End  |   |
 //             | VOL- | PP | VOL+ |     | NEXT |  MOD   |   |
             bindings = <
-   &none &kp F1 &kp F2  &kp F3  &kp F4  &none     &none &kp PG_UP &none    &none  &kp HOME  &kp DEL
-   &none &kp F5 &kp F6  &kp F7  &kp F8  &none     &none &kp LEFT  &kp DOWN &kp UP &kp RIGHT &none
-   &none &kp F9 &kp F10 &kp F11 &kp F12 &none     &kp K_PREV &kp PG_DN &none    &none  &kp END   &none
-           &kp K_VOL_DN &kp K_PP &kp K_VOL_UP     &kp K_NEXT &none &none
+   &XXX &kp F1 &kp F2  &kp F3  &kp F4  &XXX     &XXX       &kp PG_UP &XXX     &XXX   &kp HOME  &kp DEL
+   &XXX &kp F5 &kp F6  &kp F7  &kp F8  &XXX     &XXX       &kp LEFT  &kp DOWN &kp UP &kp RIGHT &XXX
+   &XXX &kp F9 &kp F10 &kp F11 &kp F12 &XXX     &kp K_PREV &kp PG_DN &XXX     &XXX   &kp END   &XXX
+         &kp K_VOL_DN &kp K_PP &kp K_VOL_UP     &kp K_NEXT &XXX &XXX
             >;
         };
 
