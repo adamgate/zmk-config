@@ -23,18 +23,27 @@
 
 // IDEAS-
 // -add layer for wireless functionality (or make combos for them)
-// -implement turbo click macro
 // -add "magic" button that has a hotkey for each program
 // -make thumb mods repeat when tapped then held (tap = 1 space, hold = layer, tap -> hold = repeating spaces)
 // -consider making num layer a numpad instead of on home row
 // -consider adding more combos (maybe to its own combos.dtsi file)
 // -tweak mod-tap and layer-tap configs to my liking
 // -add a miryoku keymap to the repo
+//   MACROS
+//     -turbo click
+//     -types ../ for up directory
+//     -Coding syntax patterns ===, ::, ->, =>, etc.
+//     -Typing () (or [] or {}) and then a left tap to position the cursor inside.
+//     -"Select line" macro (through tapping Home, Shift+End) and other editor hotkey use for Vim-like actions.
+//     -Do a web search for the current selection (Ctrl+C, Ctrl+T, Ctrl+V, Enter).
+//     -Typing emojis.
+
 
 // Links-
 // https://www.reddit.com/r/ErgoMechKeyboards/comments/zfomr0/whats_your_favorite_feature_you_implemented_on/
 // https://github.com/urob/zmk-config/blob/main/config/base.keymap
 // https://www.reddit.com/r/ErgoMechKeyboards/comments/qzfiae/my_impressions_on_miryoku_36_key_layout_system/
+// https://www.reddit.com/r/ErgoMechKeyboards/comments/r3pe0t/what_macros_do_you_use_in_your_keymaps/
 
 // layer-tap config
 &lt {  

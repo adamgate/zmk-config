@@ -1,0 +1,293 @@
+# Copyright 2021 Manna Harbour
+# https://github.com/manna-harbour/miryoku
+
+name: 'Main'
+on:
+  workflow_call:
+    inputs:
+      board:
+        type: string
+        default: '["default"]'
+      shield:
+        type: string
+        default: '["default"]'
+      alphas:
+        type: string
+        default: '["default"]'
+      nav:
+        type: string
+        default: '["default"]'
+      clipboard:
+        type: string
+        default: '["default"]'
+      layers:
+        type: string
+        default: '["default"]'
+      mapping:
+        type: string
+        default: '["default"]'
+      custom_config:
+        type: string
+        default: '["default"]'
+      kconfig:
+        type: string
+        default: '["default"]'
+      branches:
+        type: string
+        default: '["default"]'
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    container:
+      image: zmkfirmware/zmk-build-arm:stable
+    strategy:
+      fail-fast: false
+      matrix:
+        board: ${{ fromJSON(inputs.board) }}
+        shield: ${{ fromJSON(inputs.shield) }}
+        alphas: ${{ fromJSON(inputs.alphas) }}
+        nav: ${{ fromJSON(inputs.nav) }}
+        clipboard: ${{ fromJSON(inputs.clipboard) }}
+        layers: ${{ fromJSON(inputs.layers) }}
+        mapping: ${{ fromJSON(inputs.mapping) }}
+        custom_config: ${{ fromJSON(inputs.custom_config) }}
+        kconfig: ${{ fromJSON(inputs.kconfig) }}
+        branches: ${{ fromJSON(inputs.branches) }}
+    env:
+      MIRYOKU_DEBUG: ${{ secrets.MIRYOKU_DEBUG }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          path: 'miryoku_zmk'
+      - name: main
+        id: main
+        run: |
+          test "$MIRYOKU_DEBUG" = 'MIRYOKU_DEBUG_TRUE' && set -x
+
+          echo "::group::variables"
+
+          if [ -n "${{ matrix.shield }}" -a "${{ matrix.shield }}" != "default" ]
+          then
+            SHIELD_ARG="-DSHIELD=\"${{ matrix.shield }}\""
+            shield=`echo ${{ matrix.shield }} | cut -d ' ' -f 1`
+            keyboard="$shield"
+          else
+            keyboard=${{ matrix.board }}
+            shield=""
+          fi
+          echo "shield_arg=${SHIELD_ARG}" >> $GITHUB_OUTPUT
+          keyboard_split="$keyboard"
+          keyboard_base=`echo "$keyboard" | sed 's/_\(left\|right\)//'`
+
+          configfile="${GITHUB_WORKSPACE}/miryoku_zmk/miryoku/custom_config.h"
+
+          tmpfile="$configfile.tmp"
+          echo -n '#define ' > "$tmpfile"
+          echo "MIRYOKU_KEYBOARD_$keyboard_base" | tr '[a-z-]' '[A-Z_]' >> "$tmpfile"
+          cat "$configfile" >> "$tmpfile"
+          mv "$tmpfile" "$configfile"
+
+          artifact_build_name="miryoku_zmk"
+          if [ -n "${{ matrix.shield }}" -a "${{ matrix.shield }}" != 'default' ]
+          then
+            artifact_build_name="$artifact_build_name ${{ matrix.shield }}"
+          fi
+          artifact_build_name="$artifact_build_name ${{ matrix.board }}"
+
+          hash_length=16
+
+          if [ -n "${{ matrix.custom_config }}" -a "${{ matrix.custom_config }}" != 'default' ]
+          then
+            echo "${{ matrix.custom_config }}" >> "$configfile"
+            artifact_build_name="$artifact_build_name config_"`echo "${{ matrix.custom_config }}" | md5sum | head -c "$hash_length"`
+          fi
+
+          for option in "alphas_${{ matrix.alphas }}" "nav_${{ matrix.nav }}" "clipboard_${{ matrix.clipboard }}" "layers_${{ matrix.layers }}" "mapping_${{ matrix.mapping }}"
+          do
+            case "$option" in
+              *_ ) ;;
+              *_default ) ;;
+              * )
+                artifact_build_name="$artifact_build_name $option"
+                echo "#define MIRYOKU_"`echo "$option" | tr 'a-z' 'A-Z'` >> "$configfile"
+                ;;
+            esac
+          done
+
+          artifact_dir="${GITHUB_WORKSPACE}/artifacts"
+          echo "artifact_dir=$artifact_dir" >> $GITHUB_OUTPUT
+          mkdir "$artifact_dir"
+
+          test "$MIRYOKU_DEBUG" = 'MIRYOKU_DEBUG_TRUE' && cp "$configfile" "$artifact_dir"
+
+          if [ -n "${{ matrix.kconfig }}" -a "${{ matrix.kconfig }}" != 'default' ]
+          then
+            kconfig_file="${GITHUB_WORKSPACE}/miryoku_zmk/config/$keyboard_split.conf"
+            echo "${{ matrix.kconfig }}" >> "$kconfig_file"
+            artifact_build_name="$artifact_build_name kconfig_"`echo "${{ matrix.kconfig }}" | md5sum | head -c "$hash_length"`
+          fi
+          test "$MIRYOKU_DEBUG" = 'MIRYOKU_DEBUG_TRUE' && test -f "$kconfig_file" && cp "$kconfig_file" "$artifact_dir"
+
+          . "${GITHUB_WORKSPACE}/miryoku_zmk/.github/workflows/zmk"
+
+          echo "::endgroup::"
+
+          echo "::group::outboards"
+          if [ -n "$shield" ]
+          then
+            outboards="shields/$keyboard_base boards/${{ matrix.board }}"
+          else
+            outboards="boards/$keyboard_base"
+          fi
+          for outboard in $outboards
+          do
+            outboard_file="${GITHUB_WORKSPACE}/miryoku_zmk/.github/workflows/outboards/$outboard"
+            if [ -f "$outboard_file" ]
+            then
+              test "$MIRYOKU_DEBUG" = 'MIRYOKU_DEBUG_TRUE' && cp "$outboard_file" "$artifact_dir"
+              . "$outboard_file"
+              outboard_dir="${GITHUB_WORKSPACE}/outboards/$outboard"
+              if [ -n "$outboard_repository" -a -n "$outboard_ref" ]
+              then
+                if ! echo "$outboard_repository" | grep -q 'https:\/\/'
+                then
+                  outboard_repository="https://github.com/$outboard_repository.git"
+                fi
+                git clone -b "$outboard_ref" --depth 1 "$outboard_repository" "$outboard_dir"
+                if [ -n "$outboard_from" -a -n "$outboard_to" ]
+                then
+                  to="${GITHUB_WORKSPACE}/miryoku_zmk/config/$outboard_to"
+                  mkdir -p `dirname "$to"`
+                  ln -sr "$outboard_dir/$outboard_from" "$to"
+                fi
+              fi
+              outboard_repository=''
+              outboard_ref=''
+              outboard_from=''
+              outboard_to=''
+            fi
+          done
+          echo "::endgroup::"
+
+          echo "::group::zmk"
+          if [ -n "${{ matrix.branches }}" -a "${{ matrix.branches }}" != 'default' ]
+          then
+            artifact_build_name="$artifact_build_name branches_"`echo "${{ matrix.branches }}" | md5sum | head -c "$hash_length"`
+            zmk=`echo "${{ matrix.branches }}" | cut -d ' ' -f 1`
+            merges=`echo "${{ matrix.branches }}" | cut -d ' ' -f 2- -s`
+          fi
+
+          artifact_build_name=`echo $artifact_build_name | tr ' ' '-'`
+          echo "artifact_build_name=$artifact_build_name" >> $GITHUB_OUTPUT
+          artifact_generic_name=`echo "$artifact_build_name" | sed 's/_\(left\|right\)//'`
+          echo "artifact_generic_name=$artifact_generic_name" >> $GITHUB_OUTPUT
+
+          user=`echo "$zmk" | cut -f 1 -d '/'`
+          repo=`echo "$zmk" | cut -f 2 -d '/'`
+          branch=`echo "$zmk" | cut -f 3- -d '/'`
+          git clone -b "$branch" --depth 1 "https://github.com/$user/$repo.git" 'zmk'
+          echo "::endgroup::"
+
+          echo "::group::merge"
+          if [ -n "$merges" ]
+          then
+            cd "${GITHUB_WORKSPACE}/zmk"
+            git config user.name "${GITHUB_ACTOR}"
+            git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+            git fetch --unshallow
+            for merge in $merges
+            do
+              user=`echo "$merge" | cut -f 1 -d '/'`
+              repo=`echo "$merge" | cut -f 2 -d '/'`
+              branch=`echo "$merge" | cut -f 3- -d '/'`
+              remote="$user-$repo"
+              git remote add "$remote" "https://github.com/$user/$repo.git"
+              git fetch "$remote" "$branch"
+              git merge "$remote/$branch"
+              git remote remove "$remote"
+              git status
+            done
+          fi
+          echo "::endgroup::"
+      - name: cache
+        if: true
+        uses: actions/cache@v3
+        with:
+          path: |
+            zmk/modules/
+            zmk/zephyr/
+          key: zephyr ${{ runner.os }} ${{ hashFiles('zmk/app/west.yml') }}
+        timeout-minutes: 2
+        continue-on-error: true
+      - name: build
+        run: |
+          if [ "$MIRYOKU_DEBUG" = 'MIRYOKU_DEBUG_TRUE' ]
+          then
+            set -x
+            #west_debug='-v'
+            #west_build_debug='-t rom_report -t ram_report'
+          fi
+
+          echo "::group::setup"
+          cd "${GITHUB_WORKSPACE}/zmk"
+          west $west_debug init -l app
+          west $west_debug update
+          west $west_debug zephyr-export
+          echo "::endgroup::"
+
+          echo "::group::build"
+          log='build.log'
+          build_failed_message='::error::Build failed with exit code'
+          EX_UNAVAILABLE='69'
+          EX_DATAERR='65'
+          cd "${GITHUB_WORKSPACE}/zmk/app"
+          {
+            west $west_debug build -b ${{ matrix.board }} $west_build_debug -- ${{ steps.main.outputs.shield_arg }} -DZMK_CONFIG="${GITHUB_WORKSPACE}/miryoku_zmk/config" ||
+            echo "$build_failed_message $?." ;
+          } 2>&1 | tee "$log"
+          if grep -q 'Invalid BOARD; see above.' "$log"
+          then
+            echo '::error::Board not found. Unsupported or incorrect board.'
+            (exit "$EX_UNAVAILABLE")
+          fi
+          if grep -q 'Failed to locate keymap file!' "$log"
+          then
+            echo '::error::Keymap not found. Unsupported or incorrect keyboard.'
+            (exit "$EX_UNAVAILABLE")
+          fi
+          if grep -q 'Invalid SHIELD' "$log"
+          then
+            echo '::error::Keymap found but shield not found. Board used for shield.'
+            (exit "$EX_DATAERR")
+          fi
+          if grep -q 'Using keymap file: .*/boards/' "$log" && ! grep -q 'Using keymap file: .*/settings_reset.keymap' "$log"
+          then
+            echo '::error::Miryoku keyboard keymap not found. Unsupported or incorrect keyboard.'
+            (exit "$EX_UNAVAILABLE")
+          fi
+          if grep -q "$build_failed_message" "$log"
+          then
+            false
+          fi
+          echo "::endgroup::"
+
+          echo "::group::copy"
+          for extension in 'uf2' 'bin' 'hex' 'elf'
+          do
+            file="${GITHUB_WORKSPACE}/zmk/app/build/zephyr/zmk.$extension"
+            if [ -f "$file" ]
+            then
+              cp "$file" "${{ steps.main.outputs.artifact_dir }}/${{ steps.main.outputs.artifact_build_name }}.$extension"
+              test "$MIRYOKU_DEBUG" = 'MIRYOKU_DEBUG_TRUE' || break
+            fi
+          done
+          test "$MIRYOKU_DEBUG" = 'MIRYOKU_DEBUG_TRUE' && cp "${GITHUB_WORKSPACE}/zmk/app/build/zephyr/.config" "${{ steps.main.outputs.artifact_dir }}/${{ steps.main.outputs.artifact_build_name }}.config"
+          echo "::endgroup::"
+      - name: upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.main.outputs.artifact_generic_name }}
+          path: ${{ steps.main.outputs.artifact_dir }}
+

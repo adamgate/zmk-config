@@ -1,0 +1,548 @@
+# Copyright 2023 Manna Harbour
+# https://github.com/manna-harbour/miryoku
+
+* Miryoku ZMK [[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/logos/miryoku-roa-32.png]]
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/cover/miryoku-kle-cover-miryoku_zmk.png]]
+
+[[https://github.com/manna-harbour/miryoku/][Miryoku]] is an ergonomic, minimal, orthogonal, and universal keyboard layout.  [[https://github.com/manna-harbour/miryoku_zmk][Miryoku ZMK]] is the Miryoku implementation for [[https://zmkfirmware.dev/][ZMK]].
+
+This document describes Miryoku ZMK only.  For Miryoku documentation, implementations, and discussions and support, see [[https://github.com/manna-harbour/miryoku/][Miryoku]].
+
+See the [[docs/quickstart][Miryoku ZMK Quickstart Guide]] to have a personalised build running on your keyboard in a few minutes without installing any software or editing any files.
+
+** Overview
+
+[[#building][Building]] can be performed [[#local-builds][locally]], or via GitHub Actions [[#workflow-builds][workflows]] without use of a local build environment.  Many keyboards are [[#supported-keyboards][supported]], and building out-of-tree keyboards is automatically supported by the workflows.
+
+Workflow builds can be customised by copying and editing one of the [[#build-examples][example workflows]] or by filling out a [[#build-inputs][form]], and specifying [[#options][options]].  Local and workflow builds can be customised by editing a [[#config-file][config file]], and an [[#example-config-file][example]] is included.
+
+The [[#keyboard-keymaps][keyboard keymaps]] are composed of the config file, a [[#mapping-macros][mapping]] for the physical layout, and the [[#miryoku-keymap][Miryoku keymap]].
+
+[[#additional-and-experimental-features][Additional and Experimental Features]] include
+[[#caps-word][caps word]],
+[[#customisation][customisation]],
+[[#double-tap-boot][double tap boot]],
+[[#global-shift-functions][global shift functions]],
+[[#key-emulation-combos][key emulation combos]],
+[[#mouse-keys][mouse keys]],
+[[#suspend][suspend]],
+[[#tap-delay][tap delay]],
+and [[#𝑥MK][𝑥MK]].
+Open [[#issues][issues]] are also noted.
+
+
+** Building
+
+
+*** Local Builds
+
+First [[https://zmk.dev/docs/development/setup][set up the ZMK build environment]] and [[https://zmk.dev/docs/development/build-flash][build and flash the default keymap for your keyboard]].
+
+Clone this repository and set [[https://zmk.dev/docs/development/build-flash#building-from-zmk-config-folder][ZMK_CONFIG]] to the absolute path of the [[config]] subdirectory.  Use the [[#config-file][config file]] to select alternative layout and mapping options.
+
+
+*** Workflow Builds
+
+Firmware can be built via GitHub Actions workflows without use of a local build environment.
+
+First log in to GitHub, fork the Miryoku ZMK repository, and enable workflows.
+
+To access a workflow, visit the Actions tab and select the workflow.  To download the firmware from a workflow run, select the workflow, select the workflow run, select the desired Artifacts, and unzip the downloaded zip file.
+
+See the [[docs/quickstart][Miryoku ZMK Quickstart Guide]] for step by step instructions.
+
+Workflow files are in [[.github/workflows]].
+
+To enable Miryoku ZMK workflow debugging, set the following [[https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository][secret]] in the repository: ~MIRYOKU_DEBUG~ to ~MIRYOKU_DEBUG_TRUE~. Optionally also [[https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging#enabling-step-debug-logging][enable step debugging]].
+
+
+**** Build Examples
+
+Copy one of the included Build Example workflow files, edit the ~name~ value, edit and add options and values as desired, and push changes.  Access the workflow, select Run workflow, select the Branch if desired, and activate Run workflow.
+
+Options are specified in the ~with~ section and are of the following form.
+: option: '["value"]'
+
+For multiple values per option use the following form, and a matrix build will be performed for each combination of values across all options.
+: option: '["value1","value2"]'
+
+See [[#fields--options][Options]] below for a description of each option.
+
+
+**** Build Inputs
+
+The Build Inputs workflow can be used without editing workflow files.  Access the workflow, Select Run workflow, select the Branch and fill out the form as desired, and activate Run workflow.
+
+Most options are specified by entering values directly in the corresponding field.  Multiple comma separated values can be entered per option and a matrix build will be performed for each combination of values across all options.
+
+Values for [[#miryoku-alternative-layout-and-mapping-options][Miryoku alternative layout options]] are selected from a list.  As multiple selection is not supported, matrix builds across multiple values are not possible for these options, and the Test Inputs or [[#build-examples][Build Example]] workflows should be used instead.
+
+
+See [[#fields--options][Options]] below for a description of each option.
+
+
+**** Options
+
+All [[#workflow-builds][workflow]] options are described below.
+
+The [[#board][board]] option is required and all others are optional.
+
+
+***** Keyboard Selection
+
+See [[#supported-keyboards][Supported Keyboards]] for details of supported keyboards.
+
+
+****** board
+
+Specifies the ZMK board.
+
+For onboard controller keyboards (keyboards with an integrated controller), enter the keyboard name, e.g. ~ahokore~, ~ble_chiffre~, ~technikable~, ~zaphod~.
+
+For split onboard controller keyboards (keyboards with an integrated controller on each side), enter the keyboard side name, e.g. ~corneish_zen_v1_left~, ~corneish_zen_v1_right~.  To build both sides in the same run, enter both keyboard side names separated by a comma, e.g. ~corneish_zen_v1_left,corneish_zen_v1_right~.
+
+For composite keyboards (keyboards with a separate controller), enter the controller name, e.g. ~nice_nano~, ~nice_nano_v2~, ~seeeduino_xiao~, ~seeeduino_xiao_ble~.  Also specify the [[#shield][shield]].
+
+
+****** shield
+
+Specifies the ZMK shield.
+
+For onboard controller keyboards (keyboards with an integrated controller), leave as ~default~.
+
+For composite keyboards (keyboards with a separate controller), enter the keyboard name, e.g. ~absolem~, ~chocv~, ~eek~, ~osprette~.
+
+For split composite keyboards (keyboards with a separate controller on each side), enter the keyboard side name, e.g. ~corne_left~, ~corne_right~, ~cradio_left~, ~cradio_right~.  To build both sides in the same run, enter both keyboard side names separated by a comma, e.g. ~corne_left,corne_right~, ~cradio_left,cradio_right~.
+
+Also use to specify optional non-keyboard shields, e.g. ~nice_view~. To combine shields, separate with space, e.g. ~nice_view_adapter nice_view~, ~corne_left nice_view_adapter nice_view~. For multiple builds of combined shields in the same run, use both comma and space separators, e.g. ~corne_left nice_view_adapter nice_view,corne_right nice_view_adapter nice_view~.
+
+
+***** Miryoku Alternative Layout and Mapping Options
+
+The ~alphas~, ~nav~, ~clipboard~, and ~layers~ options correspond to the Miryoku alternative layout options.  See the [[https://github.com/manna-harbour/miryoku/tree/master/docs/reference#layers][default layers]] and [[https://github.com/manna-harbour/miryoku/tree/master/docs/reference#alternative-layouts][alternative layouts]] documentation for details.  See the [[.github/workflows/test-all-configs.yml][Test All Configs]] workflow file for a list of all supported values.
+
+The ~mapping~ option corresponds to the alternative [[#mapping-macros][mapping]] options.
+
+Alternative layout and mapping options are given in the documentation in the form ~MIRYOKU_OPTION=VALUE~, e.g. ~MIRYOKU_ALPHAS=QWERTY~.  To use here, use the value with the corresponding option.  Use ~default~ to represent the default value.  Values for these five options are case-insensitive.
+
+
+****** alphas
+
+Select an alternative alphas layout, e.g. ~colemak~, ~dvorak~, ~halmak~, ~qwerty~.  For Colemak Mod-DH, leave as ~default~.
+
+
+****** nav
+
+Select an alternative Nav layout, e.g. ~invertedt~, ~vi~.  For home position line nav, leave as ~default~.
+
+
+****** clipboard
+
+Select an alternative clipboard type, e.g. ~mac~, ~win~.  For CUA bindings, leave as ~default~.
+
+
+****** layers
+
+Select an alternative layers layout, e.g. ~flip~.  For right hand Nav, leave as ~default~.
+
+
+****** mapping
+
+Select an alternative mapping, e.g. ~extended_thumbs~, ~pinkie_stagger~.  For the default mapping, leave as ~default~.
+
+
+***** custom_config
+
+Appends to the [[#config-file][config]] file, e.g. ~#define MIRYOKU_TAP_QWERTY~. Join multiple lines with ~\n~, e.g. ~#define MIRYOKU_TAP_QWERTY\n#define MIRYOKU_EXTRA_COLEMAKDH~. For no additional config, leave as ~default~.
+
+
+***** ZMK Options
+
+
+****** kconfig
+
+Appends to [[#kconfig-configuration][Kconfig configuration]].  Join multiple lines with ~\n~.  For no additional config, leave as ~default~.
+
+
+****** branches
+
+Used to select an alternative ZMK branch for building, and to merge branches into ZMK at build time.
+
+Branches are specified in the form ~<user>/<repo>/<branch>~.  E.g. the default ZMK branch would be specified as ~zmkfirmware/zmk/main~.
+
+Multiple space separated branches can be specified.  The first branch specified is used as an alternative ZMK branch for building.  Any additional branches will be merged.
+
+For no changes, leave as ~default~.
+
+
+** Supported Keyboards
+
+In-tree keyboards are maintained as part of ZMK. See the [[https://zmk.dev/docs/hardware/][ZMK Supported Hardware]] documentation for details.
+
+Supporting an in-tree keyboard in Miryoku ZMK requires only adding the [[#keyboard-keymaps][keyboard keymap]] and [[#mapping-macros][mapping]] files.
+
+Out-of-tree keyboards are *not* maintained as part of ZMK or Miryoku ZMK. Keyboard definitions for out-of-tree keyboards are located in separate repositories. Some keyboards also require a fork of ZMK. Keyboard definitions and ZMK forks are maintained by the maintainers of those repositories.
+
+To build an out-of-tree keyboard the repositories need be checked out and used appropriately. For [[#local-builds][local builds]] these steps must be performed manually. For [[#workflow-builds][workflow builds]] the Miryoku ZMK build workflows perform these steps automatically at build time.
+
+Supporting an out-of-tree keyboard in Miryoku ZMK requires adding the keymap and mapping files, and references to the repositories for use by workflow builds.
+
+See the Test All Controllers, Boards, and Shields [[#workflow-builds][workflow files]] for lists of supported keyboards.
+
+See [[.github/workflows/outboards]] for details of supported out-of-tree keyboards.
+
+See https://github.com/manna-harbour/miryoku/discussions/81 for available and supported in-tree and out-of-tree keyboards and current maintenance status.
+
+
+*** Notes
+
+Notes are provided below for individual keyboards where required.
+
+
+**** Corne-ish Zen
+
+For Corne-ish Zen v1 (GB R1 and R2) build with board ~corneish_zen_v1_left,corneish_zen_v1_right~, and for Corne-ish Zen v2 (GB R3) build with board ~corneish_zen_v2_left,corneish_zen_v2_right~.
+
+A custom branch is also available at https://github.com/caksoylar/zmk/tree/caksoylar/zen-v1+v2 that includes additional display improvements and options. Documentation is at https://gist.github.com/caksoylar/c411313990978e1903c244f03039187a. Options can be selected with [[#kconfig-configuration][Kconfig configuration]]. For [[#workflow-builds][workflow builds]] using the [[#build-inputs][Build Inputs]] workflow, use ~caksoylar/zmk/caksoylar/zen-v1+v2~ with the ~branches~ option. For workflow builds using [[#build-examples][Build Example]] workflows, see the [[.github/workflows/build-example-corneish_zen-custom.yml][Build Example Corne-ish Zen Custom]] workflow. For local builds, make the changes locally.
+
+
+** Config File
+
+The config file is used to specify [[https://github.com/manna-harbour/miryoku/tree/master/docs/reference#alternative-layouts][alternative layout]] and [[#mapping-macros][mapping]] options for [[#Local-Builds][local builds]].  Options are given in the documentation in the form ~MIRYOKU_OPTION=VALUE~.  Convert to the form ~#define MIRYOKU_OPTION_VALUE~ and add to the config file.
+
+The config file can also be used to set default alternative layout and mapping options for [[#workflow-builds][workflow builds]], as an alternative to using the corresponding [[#miryoku-alternative-layout-and-mapping-options][alternative layout and mapping workflow options]].  In this case setting different values for the same option in the config file and in the workflow options may lead to undefined behaviour.
+
+The config file can also be used to set other Miryoku ZMK configuration options for local and workflow builds.
+
+Config file entries can also be specified in the [[#custom_config][custom_config]] option for workflow builds.
+
+The file is [[miryoku/custom_config.h]].  See the [[#example-config-file][example config file]].  The config file is included into the keyboard's keymap file before the mapping with:
+
+#+BEGIN_SRC C :tangle no
+#include "../miryoku/custom_config.h"
+#+END_SRC
+
+
+*** Example Config File
+
+Below is an example [[#config-file][config file]] with the following alternative layout and mapping options:
+
+- ~MIRYOKU_ALPHAS=QWERTY~
+- ~MIRYOKU_TAP=QWERTY~
+- ~MIRYOKU_EXTRA=COLEMAKDH~
+- ~MIRYOKU_NAV=INVERTEDT~
+- ~MIRYOKU_CLIPBOARD=WIN~
+- ~MIRYOKU_LAYERS=FLIP~
+- ~MIRYOKU_MAPPING=EXTENDED_THUMBS~
+
+#+BEGIN_SRC C :tangle no
+// Copyright 2022 Manna Harbour
+// https://github.com/manna-harbour/miryoku
+
+#define MIRYOKU_ALPHAS_QWERTY
+#define MIRYOKU_TAP_QWERTY
+#define MIRYOKU_EXTRA_COLEMAKDH
+#define MIRYOKU_NAV_INVERTEDT
+#define MIRYOKU_CLIPBOARD_WIN
+#define MIRYOKU_LAYERS_FLIP
+#define MIRYOKU_MAPPING_EXTENDED_THUMBS
+#+END_SRC
+
+
+** Miryoku Keymap
+
+The Miryoku keymap is a ZMK DT keymap file using C preprocessor macros for [[#config-file][configuration options]] and to abstract the physical layout.  The Miryoku keymap file is [[miryoku/miryoku.dtsi]].  The file is included into the [[#keyboard-keymaps][keyboard's keymap]] after the config file and mapping with:
+
+#+BEGIN_SRC C :tangle no
+#include "../miryoku/miryoku.dtsi"
+#+END_SRC
+
+Macros are included from [[miryoku/miryoku.h]].  Layer data is generated by [[https://github.com/manna-harbour/miryoku_babel][Miryoku Babel]] and is included from files in the [[miryoku/miryoku_babel]] directory.
+
+
+** Mapping Macros
+
+The keymap is mapped onto keyboards with different physical layouts.  The keymap is specified in terms of the ~MIRYOKU_MAPPING~ macro.  The macro is defined in a C header file for each physical layout.  Unused keys are mapped to ~&none~.  The files are below [[miryoku/mapping/]].  The mapping file is included into the [[#keyboard-keymaps][keyboard keymap]] file before the [[#miryoku-keymap][Miryoku keymap]] with e.g.
+
+#+BEGIN_SRC C :tangle no
+#include "../miryoku/mapping/36/minidox.h"
+#+END_SRC
+
+On each hand, only the main alpha block of 3 rows by 5 columns and the 3 most appropriate thumb keys are used.
+
+
+*** Notes
+
+Notes or diagrams are provided below where the selection of keys is not obvious or where alternatives are provided via mapping configuration options.
+
+
+**** 30/hummingbird
+
+[[#bottom-row-combos][Bottom row combos]] and [[#thumb-combos][thumb combos]] are enabled.
+
+
+**** 34/ferris
+
+[[#thumb-combos][Thumb combos]] are enabled.
+
+
+**** 38/draculad
+
+
+***** PIM447 Right
+
+~MIRYOKU_MAPPING=PIM447RIGHT~
+
+For use with PIM447 installed in the right secondary thumb key position. The right tertiary thumb key is replaced with the secondary and [[#thumb-combos][thumb combos]] are enabled. Note that the right secondary thumb key is in the opposite position from usual, relative to the primary.
+
+
+**** 38/totem
+
+The outer pinkie column key can be used as an alternative to the top row pinkie column key.
+
+
+**** 41/reviung41
+
+The thumbs keys, from left to right, are as follows: left secondary, left primary, right secondary, right primary, right tertiary. [[#thumb-combos][Thumb combos]] are enabled for the left thumbs. The left thumb keys are also duplicated on the left outer pinkie column, from top to bottom, as follows: primary, tertiary, secondary. Note that the left secondary thumb key is in the opposite position from usual, relative to the primary. For ~MIRYOKU_LAYERS=FLIP~, substitute left and right above.
+
+
+**** 44/technikable
+
+The middle 2 columns are unused.
+
+
+***** Default
+
+Supports ortho and MIT configurations.
+
+
+***** 2x2u
+
+~MIRYOKU_MAPPING=2X2U~
+
+Supports 2x2u configuration.
+
+
+***** Extended Thumbs
+
+~MIRYOKU_MAPPING=EXTENDED_THUMBS~
+
+The thumb keys are moved 1u to extend the thumbs.  Supports ortho configuration.
+
+
+**** 48/planck
+
+
+***** Default
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-ortho_4x12.png]]
+
+
+***** Extended Thumbs
+
+~MIRYOKU_MAPPING=EXTENDED_THUMBS~
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-ortho_4x12-extended_thumbs.png]]
+
+
+**** 48/lets_split
+
+
+***** Default
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-ortho_4x12-extended_thumbs.png]]
+
+
+***** Pinkie Stagger
+
+~MIRYOKU_MAPPING=PINKIE_STAGGER~
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-ortho_4x12-split.png]]
+
+
+**** 50/kyria
+
+
+***** Default
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-kyria.png]]
+
+
+***** Extend Thumbs
+
+~MIRYOKU_MAPPING=EXTENDED_THUMBS~
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-kyria-extended_thumbs.png]]
+
+
+**** 61/60_ansi
+
+
+***** Default
+
+An angled ortho split layout is mapped onto the row-staggered keyboard.  The rows are moved up to better position the thumb keys, the hands are separated as much as possible, and the left hand column angle is reversed to reduce ulnar deviation of the wrists.
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-60_ansi.png]]
+
+
+***** No Reverse Angle
+
+~MIRYOKU_MAPPING=NOREVERSEANGLE~
+
+An alternative subset mapping is also provided without reverse column angle.
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-60_ansi-noreverseangle.png]]
+
+
+***** Lite
+
+~MIRYOKU_MAPPING=LITE~
+
+Another alternative subset mapping is provided mapping only the 3x10 alphas, plus spacebar for space / Nav, with the remainder being the default keymap with semicolon in place of quote.
+
+
+** Keyboard Keymaps
+
+The keyboard keymaps include the [[#config-file][config file]], a [[#mapping-macros][mapping]] for the physical layout, and the [[#miryoku-keymap][Miryoku keymap]].  Keyboard keymap files are in [[config]].
+
+
+** Kconfig Configuration
+
+[[https://zmk.dev/docs/config][Kconfig keyboard configuration options]] can be set in ~config/<keyboard>.conf~ as usual for [[#local-builds][local]] and [[#workflow-builds][workflow]] builds.
+Examples include ~CONFIG_ZMK_SLEEP=y~, ~CONFIG_ZMK_DISPLAY=y~, ~CONFIG_BT_CTLR_TX_PWR_PLUS_8=y~.
+Also see the default ~<keyboard>.conf~ included in the keyboard definition, e.g. [[https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/corne/corne.conf][corne.conf]].
+
+Kconfig configuration can also be specified in the [[#kconfig][kconfig option]] for workflow builds.
+
+
+** Additional and Experimental Features
+
+
+*** Caps Word
+
+[[https://zmk.dev/docs/behaviors/caps-word][Caps word]] is used in place of ~Caps Lock~.  Combine with ~Shift~ for ~Caps Lock~.
+
+
+*** Customisation
+
+See https://github.com/manna-harbour/miryoku/discussions/85.
+
+
+*** Double Tap Boot
+
+Double tap is used with [[https://github.com/manna-harbour/miryoku/tree/master/docs/reference#additional-features][Additional features]]. Double tap for the bootloader behavior is not supported in ZMK on split keyboards. See https://github.com/zmkfirmware/zmk/issues/1494. By default, double tap for bootloader is disabled. Use a single tap instead.
+
+Double tap for bootloader can be enabled for use with non-split keyboards. For [[#local-builds][local builds]], add ~#define MIRYOKU_KLUDGE_DOUBLETAPBOOT~ to the [[#config-file][config file]]. For [[#workflow-builds][workflow builds]], use ~#define MIRYOKU_KLUDGE_DOUBLETAPBOOT~ with the ~custom_config~ option.
+
+Use with split keyboards will result in the bootloader function only taking effect on the central side. Use a reset button to enter the bootloader on the peripheral side.
+
+
+*** Global Shift Functions
+
+Shift functions are used on [[https://github.com/manna-harbour/miryoku/tree/master/docs/reference#media][Media]]. Shift functions are not supported in ZMK for RGB and EP behaviors on split keyboards. See https://github.com/zmkfirmware/zmk/issues/1494. By default, shift functions for RGB and EP are disabled. Only the unshifted functions are available.
+
+Shift functions for RGB and EP can be enabled for use with non-split keyboards. For [[#local-builds][local builds]], add ~#define MIRYOKU_KLUDGE_GLOBALSHIFTFUNCTIONS~ to the [[#config-file][config file]]. For [[#workflow-builds][workflow builds]], use ~#define MIRYOKU_KLUDGE_GLOBALSHIFTFUNCTIONS~ with the ~custom_config~ option.
+
+Use with split keyboards will result in the shifted as well as the unshifted functions for RGB and EP only taking effect on the central side.
+
+
+*** Key Emulation Combos
+
+Emulate a key with a combo of two other keys.  Enabled automatically on keyboards with a missing key.  Can be enabled on other keyboards for use with hard to reach keys, or for compatibility.
+
+See https://github.com/manna-harbour/miryoku/issues/56.
+
+
+**** Top Row Combos
+
+On the top row on each hand, combo the ring and middle finger keys to emulate the pinkie key, and combo the middle and index finger keys to emulate the inner index key.
+
+Requires ~CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY=16~ [[#kconfig-configuration][Kconfig configuration]].
+
+
+**** Bottom Row Combos
+
+On the bottom row on each hand, combo the ring and middle finger keys to emulate the pinkie key, and combo the middle and index finger keys to emulate the inner index key.
+
+Requires ~CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY=16~ [[#kconfig-configuration][Kconfig configuration]].
+
+
+**** Thumb Combos
+
+On each hand, combo the primary and secondary thumb keys to emulate the tertiary thumb key.  Requires suitable keycaps to enable the thumb to press both keys simultaneously.
+
+
+*** Mouse Keys
+
+
+**** Mouse Keys on Host
+
+The Mouse and Button layers use [[https://en.wikipedia.org/wiki/Mouse_keys][mouse keys on the host]].  Scroll is not supported.
+
+- [[https://linuxreviews.org/HOWTO_use_the_numeric_keyboard_keys_as_mouse_in_XOrg][X11]]
+- [[https://support.apple.com/en-au/guide/mac-help/mh27469/mac][Mac]]
+- [[https://support.microsoft.com/en-us/windows/use-mouse-keys-to-move-the-mouse-pointer-9e0c72c8-b882-7918-8e7b-391fd62adf33][Windows]]
+
+
+**** Mousekeys PR
+
+Support for https://github.com/zmkfirmware/zmk/pull/778 is also included.
+
+As the PR branch is not being maintained, use https://github.com/urob/zmk/tree/mouse-3.2 instead.
+
+To build, add ~#define MIRYOKU_KLUDGE_MOUSEKEYSPR~ to the [[#config-file][config file]], add ~CONFIG_ZMK_MOUSE=y~ to the [[#kconfig-configuration][Kconfig configuration]], and merge the mousekeys branch.
+
+For [[#workflow-builds][workflow builds]] using the [[#build-inputs][Build Inputs]] workflow, use ~#define MIRYOKU_KLUDGE_MOUSEKEYSPR~ with the ~custom_config~ option, ~CONFIG_ZMK_MOUSE=y~ with the ~kconfig~ option, and ~zmkfirmware/zmk/main urob/zmk/mouse-3.2~ with the ~branches~ option. For workflow builds using [[#build-examples][Build Example]] workflows, see the [[.github/workflows/build-example-mousekeyspr.yml][Build Example mousekeyspr]] workflow.
+
+For local builds, make the changes locally.
+
+
+*** Suspend
+
+Support for https://github.com/zmkfirmware/zmk/issues/1292#issuecomment-1264603539 is included using https://github.com/manna-harbour/zmk/tree/suspend-test and https://github.com/manna-harbour/zephyr/tree/v3.0.0+zmk-fixes-suspend-test.
+
+Suspend takes the place of the [[https://github.com/manna-harbour/miryoku/tree/master/docs/reference#additional-features][boot]] key. For split keyboards, suspend the peripheral side then the central side.
+
+For [[#local-builds][local builds]], add ~#define MIRYOKU_KLUDGE_SUSPEND~ to the [[#config-file][config file]] and merge https://github.com/manna-harbour/zmk/tree/suspend-test.
+
+For [[#workflow-builds][workflow builds]] using the [[#build-inputs][Build Inputs]] workflow, use ~#define MIRYOKU_KLUDGE_SUSPEND~ with the ~custom_config~ option, and ~zmkfirmware/zmk/main manna-harbour/zmk/suspend-test~ with the ~branches~ option. For workflow builds using [[#build-examples][Build Example]] workflows, see the [[.github/workflows/build-example-suspend.yml][Build Example suspend]] workflow.
+
+
+*** Tap Delay
+
+Adds a delay between press and release of hold-tap taps, as a work around for https://github.com/zmkfirmware/zmk/issues/1444.
+
+For [[#local-builds][local builds]], add ~#define MIRYOKU_KLUDGE_TAPDELAY~ to the [[#config-file][config file]]. For [[#workflow-builds][workflow builds]], use ~#define MIRYOKU_KLUDGE_TAPDELAY~ with the ~custom_config~ option.
+
+
+*** 𝑥MK
+
+Use Miryoku ZMK with any keyboard with [[https://github.com/manna-harbour/xmk][𝑥MK]].
+
+
+**** xmk Shield
+
+For [[#local-builds][local builds]] first merge https://github.com/zmkfirmware/zmk/pull/1318. Add https://github.com/manna-harbour/xmk/tree/main/zmk/boards/shields/xmk as ~config/boards/shields/xmk~. Build with shield ~xmk~ and the appropriate board.
+
+For [[#workflow-builds][workflow builds]] using the [[#build-inputs][Build Inputs]] workflow, use ~xmk~ with the ~shield~ option, the appropriate board with the ~board~ option, and ~zmkfirmware/zmk/main petejohanson/zmk/shell/tap-command~ with the ~branches~ option. For workflow builds using [[#build-examples][Build Example]] workflows, see the [[.github/workflows/build-example-xmk-xmk.yml][Build Example 𝑥MK xmk]] workflow.
+
+
+**** native_posix_64 Board
+
+For [[#local-builds][local builds]] first merge https://github.com/zmkfirmware/zmk/pull/1318. Add ~#define MIRYOKU_KLUDGE_TAPDELAY~ to the config file. Build with board ~native_posix_64~.
+
+For [[#workflow-builds][workflow builds]] using the [[#build-inputs][Build Inputs]] workflow, use ~native_posix_64~ with the ~board~ option, ~#define MIRYOKU_KLUDGE_TAPDELAY~ with the ~custom_config~ option, and ~zmkfirmware/zmk/main petejohanson/zmk/shell/tap-command~ with the ~branches~ option. For workflow builds using [[#build-examples][Build Example]] workflows, see the [[.github/workflows/build-example-xmk-native_posix_64.yml][Build Example 𝑥MK native_posix_64]] workflow.
+
+
+** Issues
+
+
+*** No Current Layer Lock
+
+[[https://github.com/manna-harbour/miryoku/tree/master/docs/reference#additional-features][Current layer lock]] is not supported in ZMK. Use opposite layer lock with the opposite hand instead. See https://github.com/zmkfirmware/zmk/issues/1299.
+
+
+** 
+
+[[https://github.com/manna-harbour][https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/logos/manna-harbour-boa-32.png]]
