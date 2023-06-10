@@ -21,7 +21,7 @@
                 // In base layer, press east bottom 3 keys to switch to gaming
                 combo_jk_esc {
                         timeout-ms = <50>;
-                        layers = <0, 4>;
+                        layers = <0 4>;
                         key-positions = <19 20>;
                         bindings = <&kp ESC>;
                 };
