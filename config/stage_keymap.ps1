@@ -1,3 +1,5 @@
+# A simple script to make switching between layouts painless
+
 $Folder = Read-Host "Please enter the name of the folder containing the keymap you want to build (e.g. 'default')" 
 
 # Ensure provided folder exists

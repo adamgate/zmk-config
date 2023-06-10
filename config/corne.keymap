@@ -67,7 +67,7 @@
    &kp CAPS &kp Q &kp W &kp E &kp R &kp T &kp Y     &kp U &kp I     &kp O   &kp P    &kp DEL
    &kp ESC  &kp A &kp S &kp D &kp F &kp G &kp H     &kp J &kp K     &kp L   &kp SEMI &kp SQT
    &td0     &kp Z &kp X &kp C &kp V &kp B &kp N     &kp M &kp COMMA &kp DOT &kp FSLH &kp RET
-               &kp LCTRL &kp LCMD &lt NUM SPACE      &lt SYMBOL BSPC &lt FKEY TAB &kp RALT
+               &kp LCTRL &kp LCMD &lt NUM SPACE     &lt SYMBOL BSPC &lt FKEY TAB &kp RALT
             >;
         };
 
@@ -78,10 +78,10 @@
 // |   |   |   |   |   |   |    | + | - | * | / | = | . |
 //           |   | MOD |   |    | BSPC |   |   |
             bindings = <
-   &none &none  &none  &none  &none  &none     &none       &none        &none           &none         &none        &none
-   &none &kp N1 &kp N2 &kp N3 &kp N4 &kp N5    &kp N6      &kp N7       &kp N8          &kp N9        &kp N0       &none
-   &none &none  &none  &none  &none  &none     &kp KP_PLUS &kp KP_MINUS &kp KP_MULTIPLY &kp KP_DIVIDE &kp KP_EQUAL &kp KP_DOT
-                          &none &none &none    &kp BSPC &none &kp K_PASTE
+   &none &none  &none  &none  &none  &none      &none       &none        &none           &none         &none        &none
+   &none &kp N1 &kp N2 &kp N3 &kp N4 &kp N5     &kp N6      &kp N7       &kp N8          &kp N9        &kp N0       &none
+   &none &none  &none  &none  &none  &none      &kp KP_PLUS &kp KP_MINUS &kp KP_MULTIPLY &kp KP_DIVIDE &kp KP_EQUAL &kp KP_DOT
+                          &none &none &none     &kp BSPC &none &kp K_PASTE
             >;
         };
 
@@ -92,10 +92,10 @@
 // |   |   |   |   |   |   |     |  _  | + | { | } | "|" | ~ |
 //    | CUT | COPY | PASTE |     | MOD |   |   |
             bindings = <
-   &none &none    &none  &none    &none    &none        &kp CARET &kp AMPS  &kp KP_ASTERISK &kp LPAR &kp RPAR &kp BSPC
-   &none &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT    &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp BSLH &kp GRAVE
-   &none &none    &none  &none    &none    &none        &kp UNDER &kp PLUS  &kp LBRC        &kp RBRC &kp PIPE &kp TILDE
-                    &kp K_CUT &kp K_COPY &kp K_PASTE    &none &none &none
+   &none &none    &none  &none    &none    &none         &kp CARET &kp AMPS  &kp KP_ASTERISK &kp LPAR &kp RPAR &kp BSPC
+   &none &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT     &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp BSLH &kp GRAVE
+   &none &none    &none  &none    &none    &none         &kp UNDER &kp PLUS  &kp LBRC        &kp RBRC &kp PIPE &kp TILDE
+                    &kp K_CUT &kp K_COPY &kp K_PASTE     &none &none &none
             >;
         };
 
@@ -106,10 +106,10 @@
 // |   | F9 | F10 | F11 | F12 |   |     | PREV | Pg Dwn |   |   | End  |   |
 //             | VOL- | PP | VOL+ |     | NEXT |  MOD   |   |
             bindings = <
-   &none &kp F1 &kp F2  &kp F3  &kp F4  &none    &none &kp PG_UP &none    &none  &kp HOME  &kp DEL
-   &none &kp F5 &kp F6  &kp F7  &kp F8  &none    &none &kp LEFT  &kp DOWN &kp UP &kp RIGHT &none
-   &none &kp F9 &kp F10 &kp F11 &kp F12 &none    &kp K_PREV &kp PG_DN &none    &none  &kp END   &none
-           &kp K_VOL_DN &kp K_PP &kp K_VOL_UP    &kp K_NEXT &none &none
+   &none &kp F1 &kp F2  &kp F3  &kp F4  &none     &none &kp PG_UP &none    &none  &kp HOME  &kp DEL
+   &none &kp F5 &kp F6  &kp F7  &kp F8  &none     &none &kp LEFT  &kp DOWN &kp UP &kp RIGHT &none
+   &none &kp F9 &kp F10 &kp F11 &kp F12 &none     &kp K_PREV &kp PG_DN &none    &none  &kp END   &none
+           &kp K_VOL_DN &kp K_PP &kp K_VOL_UP     &kp K_NEXT &none &none
             >;
         };
 
